@@ -2,10 +2,14 @@ PIAccess/bin
 PIAccess/bin/*
 PIAccess/*.log
 PIAccess/PIInterface.*
-pisrc/PITest/*.user
+pisrc/Debug
+pisrc/Debug/*
 pisrc/*.ncb
 pisrc/*.suo
 pisrc/*.user
+pisrc/PITest/*.user
+pisrc/PITest/Debug
+pisrc/PITest/Debug/*
 pisrc-MFC/*.ncb
 pisrc-MFC/*.suo
 pisrc-MFC/Debug

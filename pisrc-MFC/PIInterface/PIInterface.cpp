@@ -57,8 +57,8 @@ int SetjTagFromTAG(JNIEnv *env,TAG &tag,jobject jobjTag)
 	env->SetObjectField(jobjTag,jfID,jstr);
 
 	jfID = env->GetFieldID(clsTag,"tagname","Ljava/lang/String;");
-	//jstr = env->NewStringUTF(tag.tagname);
-	jstr = char2jstring(env,(const char*)tag.tagname);
+	jstr = env->NewStringUTF(tag.tagname);
+	//jstr = char2jstring(env,(const char*)tag.tagname);
 	env->SetObjectField(jobjTag,jfID,jstr);
 
 	jfID = env->GetFieldID(clsTag,"descriptor","Ljava/lang/String;");

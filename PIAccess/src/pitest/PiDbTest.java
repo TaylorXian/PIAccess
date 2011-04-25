@@ -11,13 +11,18 @@ import java.text.*;
 
 
 public class PiDbTest extends TestCase {
+	private PiDb piDb;
 	public PiDbTest()
 	{
 		super();
 	}
-	
+	public void setUp() {
+		piDb = new PiDb();
+	}
+	public void tearDown() {
+		return;
+	}
 	public void test() {
-		PiDb piDb = new PiDb();
 		//ConnectServer@
 		System.out.println("Connect Test£¡");
 		int result = piDb.ConnectServer("127.0.0.1","XJ");
@@ -182,9 +187,16 @@ public class PiDbTest extends TestCase {
 		}
 	}
 	
-	public void testGet()
+	public void testSetservernode()
 	{
-		
+		int reVal = piDb.SetDefaultServer("10.13.0.12");
+		assertEquals(1, reVal);
+	}
+	
+	public void testConnectServer()
+	{
+		int reVal = piDb.ConnectServer("10.13.0.12", "cheku");
+		assertEquals(1, reVal);
 	}
 	
 	public static void main(String[] args)

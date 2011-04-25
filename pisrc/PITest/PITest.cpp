@@ -52,12 +52,37 @@ void pi()
 
     int r = piut_disconnect();
 }
+void test_getpiapiversion()
+{
+   char version[32];
+   
+   if (!piut_getapiversion(version, sizeof(version)))
+   {
+      printf("\nPI-API version %s", version);
+   }
+}
+
+void test_setservernode()
+{
+    int reVal = piut_setservernode("10.13.0.12");
+    if (reVal)
+    {
+        printf("Error %d.", reVal);
+    }
+    else 
+    {
+        printf("Connected.");
+    }
+    reVal = piut_disconnect();
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-    int i = start_gtest(&argc, argv);
+    //int i = start_gtest(&argc, argv);
     //////////////////////////////////////
 
     //pi();
+    //test_getpiapiversion();
+    test_setservernode();
 	return 0;
 }
