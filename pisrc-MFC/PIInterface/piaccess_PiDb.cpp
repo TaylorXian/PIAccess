@@ -7,6 +7,7 @@
 */
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_FindPointNumber(JNIEnv *env, jobject obj, jstring strName)
 {
+    WriteLog("Java_piaccess_PiDb_FindPointNumber");
 	//通过标签点的名称取得点的编号
 	int32 iNumber;
 	char* cName = (char*)env->GetStringUTFChars(strName,NULL);
@@ -43,6 +44,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_FindPointNumber(JNIEnv *env, jobject o
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetSingleSNData
 (JNIEnv *env, jobject obj, jobject objTag)
 {
+    WriteLog("Java_piaccess_PiDb_GetSingleSNData");
 	TAG tag = {'\0',0,'\0','\0','\0',PI_Type_bad,0,0,NULL,0,0,0,NULL};
 	int result;
 	result = GetTAGFromjTag(env,objTag,tag);
@@ -79,6 +81,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetSingleSNData
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetArraySNData
 (JNIEnv *env, jobject obj, jobjectArray arrTag)
 {
+    WriteLog("Java_piaccess_PiDb_GetArraySNData");
 	jsize length = env->GetArrayLength((jarray)arrTag);
 
 	for (int i = 0;i<length;i++)
@@ -103,6 +106,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetArraySNData
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetARCount(JNIEnv *env, 
 jobject obj, jobject objCalStart, jobject objCalEnd, jint iPtNumber)
 {
+    WriteLog("Java_piaccess_PiDb_GetARCount");
 	PITIMESTAMP tmStart = CalendarToPITIMESTAMP(env,objCalStart);
 	PITIMESTAMP tmEnd = CalendarToPITIMESTAMP(env,objCalEnd);
 	int count=0;
@@ -127,6 +131,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetARData(JNIEnv *env,
 jobject obj, jobject objCalStart, jobject objCalEnd, jint iPtNumber, 
 jobjectArray objarTag)
 {
+    WriteLog("Java_piaccess_PiDb_GetARData");
 	TAG tag = {'\0',0,'\0','\0','\0',PI_Type_bad,0,0,NULL,0,0,0,NULL};
 	tag.pointnum = iPtNumber;
 
@@ -157,6 +162,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetArrayARData(JNIEnv *env,
 jobject obj, jobjectArray objarCal, jint iPtNumber, jobjectArray objarTag)
 
 {
+    WriteLog("Java_piaccess_PiDb_GetArrayARData");
 	TAG tag = {'\0',0,'\0','\0','\0',PI_Type_bad,0,0,NULL,0,0,0,NULL};
 	tag.pointnum = iPtNumber;
 	InitTAGFromPI(tag);
@@ -186,6 +192,7 @@ jobject obj, jobjectArray objarCal, jint iPtNumber, jobjectArray objarTag)
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_ConnectServer
 (JNIEnv *env, jobject obj, jstring jstrName, jstring jstrProcName)
 {
+    WriteLog("Java_piaccess_PiDb_ConnectServer");
 	int result = 1,trys = 0;
 	const char* strName = env->GetStringUTFChars(jstrName,false);
 	const char* ProcName = env->GetStringUTFChars(jstrProcName,false);
@@ -214,6 +221,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_ConnectServer
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_SetDefaultServer
 (JNIEnv *env, jobject obj, jstring jstrSvrName)
 {
+    WriteLog("Java_piaccess_PiDb_SetDefaultServer");
 	const char* cSvrName = env->GetStringUTFChars(jstrSvrName,false);
 	int32 result = piut_setdefaultservernode(cSvrName);
 	if(result)
@@ -229,6 +237,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_SetDefaultServer
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetDefaultServerInfo
 (JNIEnv *env, jobject obj, jstring jstrSvrName, jstring jstrSvrAddr, jobject bConnected)
 {
+    WriteLog("Java_piaccess_PiDb_GetDefaultServerInfo");
 	char name[32],address[32];
 	int32 iConnect = 0;
 	if(!piut_netserverinfo ( name, 32, address, 32, &iConnect ))
@@ -249,6 +258,7 @@ JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetDefaultServerInfo
 JNIEXPORT jint JNICALL Java_piaccess_PiDb_GetServerInfo
 (JNIEnv *env, jobject obj, jstring jstrSvrName, jstring jstrSvrAddr, jobject bConnected)
 {
+    WriteLog("Java_piaccess_PiDb_GetServerInfo");
 	char address[32];
 	int32 iConnect = 0;
 	const char* name = env->GetStringUTFChars(jstrSvrName,false);

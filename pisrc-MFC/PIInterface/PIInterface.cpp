@@ -1,14 +1,39 @@
 #include "PIInterface.h"
 #include <tchar.h>
 
+void WriteLog(const char* info_format, ...)
+{
+    const int LOG_PATH_LEN = 64;
+    const int TIME_STR_LEN = 64;
+    SYSTEMTIME timeNow;
+    GetLocalTime(&timeNow);
+	va_list arg_ptr;
+	va_start(arg_ptr, info_format);
+    FILE *pfLog;
+    //time_t t;
+    //time(&t);
+    char time_str[TIME_STR_LEN] = {0};
+    sprintf(time_str, "%4d/%2d/%2d %2d:%2d:%2d %4dms ... ", timeNow.wYear, timeNow.wMonth, timeNow.wDay,
+        timeNow.wHour, timeNow.wMinute, timeNow.wSecond, timeNow.wMilliseconds);
+    //strftime(time_str, sizeof(time_str), "%Y/%m/%d %H:%M:%S %z...", localtime(&t));
+	//pfLog = fopen(logfile, "a+");
+	pfLog = fopen("PIInterface.log", "a+");
+	fprintf(pfLog, "%s", time_str);
+	vfprintf(pfLog, info_format, arg_ptr);
+	fprintf(pfLog, "\n");
+    fclose(pfLog);
+	va_end(arg_ptr);
+}
 
 int GetTAGFromjTag(JNIEnv *env,jobject jobjTag, TAG &tag)
 {
+    WriteLog("GetTAGFromjTag begin");
 	//获取类
 	jclass jclsTag = env->GetObjectClass(jobjTag);
 	if(!jclsTag)
 	{
 		printf("Error in GetSnapShot GetObjectClass(Tag)\n");
+		WriteLog("Error in GetSnapShot GetObjectClass(Tag)\n");
 		return 0;
 	}
 	//先取出标签名
@@ -23,17 +48,20 @@ int GetTAGFromjTag(JNIEnv *env,jobject jobjTag, TAG &tag)
 	}
 	jfieldID  idPtNum =env->GetFieldID(jclsTag,"pointnum","I");
 	tag.pointnum = env->GetIntField(jobjTag,idPtNum);
-	
+    WriteLog("GetTAGFromjTag end");
+
 	return 1;
 	
 }
 int SetjTagFromTAG(JNIEnv *env,TAG &tag,jobject jobjTag)
 {
+    WriteLog("SetjTagFromTAG begin");
 	//获取类
 	jclass clsTag = env->GetObjectClass(jobjTag);
 	if(!clsTag)
 	{
 		printf("Error in GetSnapShot GetObjectClass(Tag)");
+		WriteLog("Error in GetSnapShot GetObjectClass(Tag)\n");
 		return 0;
 	}
 	jfieldID jfID = env->GetFieldID(clsTag,"rval","D");
@@ -72,10 +100,12 @@ int SetjTagFromTAG(JNIEnv *env,TAG &tag,jobject jobjTag)
 	env->SetObjectField(jobjTag,jfID,jstr);
 	
 	env->DeleteLocalRef(jstr);
+    WriteLog("SetjTagFromTAG end");
 	return 1;
 }
 int InitTAGFromPI(TAG &tag)//!!使用之前必须对tag进行初始化
 {
+    WriteLog("InitTAGFromPI begin");
 	int result;
 	if('\0'!=tag.tagname[0])
 	{
@@ -174,6 +204,7 @@ int InitTAGFromPI(TAG &tag)//!!使用之前必须对tag进行初始化
 }
 void PIValueTypeToChar(PIvaluetype PtType,char* cType)
 {
+    WriteLog("PIValueTypeToChar");
 	char *PIValueTab[] ={
 		"PI_Type_null", //= 0,
 		"PI_Type_bool",
@@ -227,6 +258,7 @@ void PIValueTypeToChar(PIvaluetype PtType,char* cType)
 //将Calendar转换成PITIMESTAMP
 PITIMESTAMP CalendarToPITIMESTAMP(JNIEnv *env,jobject objCal)
 {
+    WriteLog("CalendarToPITIMESTAMP");
 	PITIMESTAMP tmStamp;
 	//读取Calendar的数据
 	jclass jclsCal = env->GetObjectClass(objCal);
@@ -264,6 +296,7 @@ PITIMESTAMP CalendarToPITIMESTAMP(JNIEnv *env,jobject objCal)
 void SetObject(JNIEnv *env,jobject objTag,double rval, int ival, 
 			   int istat, short iflag,PITIMESTAMP tmStp)
 {
+    WriteLog("SetObject");
 	//获取类
 	jclass clsTag = env->GetObjectClass(objTag);
 	if(!clsTag)
@@ -285,6 +318,7 @@ void SetObject(JNIEnv *env,jobject objTag,double rval, int ival,
 
 jobject PITIMESTAMPToCalendar(JNIEnv *env, PITIMESTAMP tmStamp)
 {
+    WriteLog("PITIMESTAMPToCalendar");
 	jclass jclsCal = env->FindClass("java/util/Calendar");
 	if(!jclsCal)
 	{
@@ -318,12 +352,14 @@ jobject PITIMESTAMPToCalendar(JNIEnv *env, PITIMESTAMP tmStamp)
 //设置标签点的Calendar值
 void SetTagCalendar(JNIEnv *env,jobject jobjTag, jobject jobjCal)
 {
+    WriteLog("SetTagCalendar");
 	jclass jclsTag = env->GetObjectClass(jobjTag);
 	jfieldID jfCalID = env->GetFieldID(jclsTag,"ts","Ljava/util/Calendar;");
 	env->SetObjectField(jobjTag,jfCalID,jobjCal);
 }
 void SetTagPIvaluetype(JNIEnv *env, jobject jobjTag, PIvaluetype valType)
 {
+    WriteLog("SetTagPIvaluetype");
 	const char* strValType = GetTypeStr(valType);
 	//获取枚举类型的jobject对象
 	jclass jclsValType = env->FindClass("piaccess/PIvaluetype");
@@ -347,6 +383,7 @@ void SetTagPIvaluetype(JNIEnv *env, jobject jobjTag, PIvaluetype valType)
 }
 const char *GetTypeStr ( PIvaluetype pttype)
 {
+    WriteLog("GetTypeStr");
 	switch (pttype)
 	{
 	case PI_Type_null:
@@ -394,6 +431,7 @@ const char *GetTypeStr ( PIvaluetype pttype)
 }
 int GetStateCode(TAG &tag)
 {
+    WriteLog("GetStateCode");
 	//printf("istat:%d",tag.istat);
 	int result;
 	int statlen = sizeof(tag.strstat);
@@ -430,6 +468,7 @@ int GetStateCode(TAG &tag)
 }
 void SetjstringFromchar(char* cName, JNIEnv *env, jstring &jstrName)
 {
+    WriteLog("SetjstringFromchar");
 	jclass jclsStr = env->FindClass("java/lang/String");
 	jstring jstrBuf = env->NewStringUTF(cName);
 	jmethodID jmInitID = env->GetMethodID(jclsStr,"<init>","(Ljava/lang/String;)V");
@@ -437,6 +476,7 @@ void SetjstringFromchar(char* cName, JNIEnv *env, jstring &jstrName)
 }
 void SetjBooleanFromBOOL(BOOL bval, JNIEnv *env, jobject &jBoolean)
 {
+    WriteLog("SetjBooleanFromBOOL");
 	jclass jclsBoolean = env->GetObjectClass(jBoolean);
 	//jboolean jbval = bval;
 	jmethodID jmInitID = env->GetMethodID(jclsBoolean,"<init>","(Z)V");
@@ -445,6 +485,7 @@ void SetjBooleanFromBOOL(BOOL bval, JNIEnv *env, jobject &jBoolean)
 }
 jstring char2jstring(JNIEnv *env, const char* str)
 {
+    WriteLog("char2jstring");
 	jstring jstr = 0;
 	int lengthofstr = strlen(str);
 	//int lengthofstr = sizeof(str)+1;

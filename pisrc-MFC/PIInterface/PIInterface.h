@@ -1,9 +1,13 @@
 
 #pragma once
 
+//#include <stdio.h>
 #include "piapix.h"
 #include "piaccess_PiDb.h"
 #define TAG_LEN 80
+
+// log filename
+//LPCSTR logfile = "PIInterface.log";
 
 typedef struct _TAG
 {
@@ -22,6 +26,9 @@ typedef struct _TAG
 	int16  flags;
 	PITIMESTAMP ts;
 } TAG;
+// 写日志方法。
+void WriteLog(const char* info_format, ...);
+
 //InitTAGFromjTag说明：
 //根据java中的Tag对象jobjTag初始化C中的TAG结构体tag，将jobjTag中有tagname或者pointnum
 //赋值到tag的相应字段
